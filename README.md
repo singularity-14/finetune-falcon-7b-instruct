@@ -1,7 +1,7 @@
 # **Fine-Tuning Falcon-7B with LoRA for Medical QA**
 
 ## **Overview**
-This project fine-tunes the **Falcon-7B-Instruct** model using **Low-Rank Adaptation (LoRA)** for **medical question-answering** tasks. It leverages **Hugging Face Transformers**, **FAISS embeddings**, and **LangChain** for efficient knowledge retrieval and response generation. The model is trained on the **MedQA-USMLE-4-options** dataset.
+This project fine-tunes the **Falcon-7B-Instruct** model using **Low-Rank Adaptation (LoRA)** for **medical question-answering** tasks. It leverages **Hugging Face Transformers**. The model is finetuned on the subset of **MedQA-USMLE-4-options** dataset.
 
 ## **Features**
 - **GPU Utilization Check**: Ensures CUDA is available for optimal training.
@@ -15,7 +15,7 @@ This project fine-tunes the **Falcon-7B-Instruct** model using **Low-Rank Adapta
 ## **Installation**
 ### **Prerequisites**
 - Python 3.8 or higher
-- CUDA-compatible GPU (recommended for training)
+- CUDA-compatible GPU (recommended for training) (Kaggle)
 - Virtual environment (optional but recommended)
 
 ### **Setup**
@@ -67,8 +67,9 @@ After training completes, the script will automatically save:
 - **Hugging Face Trainer**
 - **FAISS for embedding storage**
 - **BitsAndBytes (4-bit quantization)**
-- **CUDA for GPU acceleration**
+- **Kaggle (GPU acceleration)**
 
 ## **Acknowledgments**
 - **Hugging Face** for providing **Falcon-7B-Instruct**, **MedQA Dataset** for medical question-answering, and Trainer utilities.
 - **BitsAndBytes & LoRA** for efficient model fine-tuning.
+- **Kaggle** for providing platfrom to finetune the model using GPUs.
