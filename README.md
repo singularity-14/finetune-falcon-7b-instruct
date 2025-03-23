@@ -21,8 +21,8 @@ This project fine-tunes the **Falcon-7B-Instruct** model using **Low-Rank Adapta
 ### **Setup**
 1. **Clone the repository**  
    ```bash
-   git clone https://github.com/singularity-14/Falcon-MedQA.git
-   cd Falcon-MedQA
+   git clone https://github.com/singularity-14/finetune-falcon-7b-instruct.git
+   cd finetune-falcon-7b-instruct
    ```
 
 2. **Create a virtual environment** (optional)  
