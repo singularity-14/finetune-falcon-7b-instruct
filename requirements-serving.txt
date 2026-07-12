@@ -1,0 +1,10 @@
+# ── Serving / API requirements (for Docker deployment) ────────────────────────
+fastapi==0.111.0
+uvicorn[standard]==0.29.0
+pydantic==2.7.1
+torch==2.1.0
+transformers==4.47.0
+accelerate==0.27.0
+bitsandbytes==0.42.0
+peft==0.8.2
+PyYAML==6.0.1

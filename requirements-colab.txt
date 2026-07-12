@@ -1,0 +1,24 @@
+# ── Colab-safe requirements (tested on Google Colab T4 free tier) ─────────────
+# Run: pip install -r requirements-colab.txt
+
+# Core ML
+torch==2.1.0
+transformers==4.47.0
+accelerate==0.27.0
+bitsandbytes==0.42.0
+datasets==2.18.0
+peft==0.8.2
+loralib==0.1.2
+
+# Evaluation
+rouge-score==0.1.2
+numpy==1.26.4
+
+# Monitoring
+tensorboard==2.16.2
+
+# Config
+PyYAML==6.0.1
+
+# Utilities
+tqdm==4.66.2

@@ -1,0 +1,40 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Training outputs (generated — not tracked in git)
+outputs/
+logs/
+
+# HuggingFace model cache
+.cache/
+*.safetensors
+*.bin
+*.pt
+*.pth
+
+# Jupyter checkpoints
+.ipynb_checkpoints/
+
+# OS artifacts
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+
+# Docker
+docker/model/
+
+# Secrets
+*.env
+.env
+secrets/
