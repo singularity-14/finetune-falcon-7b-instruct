@@ -1,0 +1,13 @@
+# Kaggle-specific requirements
+# Kaggle pre-installs: torch, transformers, accelerate, datasets,
+# tensorboard, PyYAML, numpy, tqdm, fsspec
+# We ONLY install what's missing. No version pins on pre-installed packages
+# to avoid dependency conflicts with Kaggle's frozen environment.
+
+# Core fine-tuning packages (not pre-installed on Kaggle)
+peft==0.8.2
+bitsandbytes>=0.46.1
+loralib==0.1.2
+
+# Evaluation
+rouge-score==0.1.2
