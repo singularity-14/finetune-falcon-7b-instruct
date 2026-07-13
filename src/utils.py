@@ -72,16 +72,16 @@ def gpu_report() -> dict:
 
 
 def make_output_dirs(cfg: dict):
-    """Create all output directories from config."""
+    """Create all output directories from config. Handles both absolute and relative paths."""
     dirs = [
         cfg["training"]["output_dir"],
         cfg["training"]["logging_dir"],
         cfg["saving"]["final_model_dir"],
         cfg["saving"]["peft_adapter_dir"],
-        "outputs",
     ]
     for d in dirs:
         Path(d).mkdir(parents=True, exist_ok=True)
+        print(f"  📁 {d}")
 
 
 def free_memory():

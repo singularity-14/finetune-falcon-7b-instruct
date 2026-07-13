@@ -37,8 +37,8 @@ dataset:
 
 # --- Training ---
 training:
-  output_dir: "./outputs/results"
-  logging_dir: "./outputs/logs"
+  output_dir: "/kaggle/working/results"
+  logging_dir: "/kaggle/working/logs"
   num_train_epochs: 10
   per_device_train_batch_size: 2
   per_device_eval_batch_size: 2
@@ -67,8 +67,8 @@ early_stopping:
 
 # --- Saving ---
 saving:
-  final_model_dir: "./outputs/final_model"
-  peft_adapter_dir: "./outputs/peft_adapter"
+  final_model_dir: "/kaggle/working/final_model"
+  peft_adapter_dir: "/kaggle/working/peft_adapter"
 
 # --- Evaluation ---
 evaluation:

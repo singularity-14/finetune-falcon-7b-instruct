@@ -34,7 +34,7 @@ def build_trainer(model, cfg: dict, train_dataset, eval_dataset, data_collator) 
         fp16=t["fp16"],
         logging_dir=t["logging_dir"],
         logging_steps=t["logging_steps"],
-        evaluation_strategy=t["evaluation_strategy"],
+        eval_strategy=t["evaluation_strategy"],
         save_strategy=t["save_strategy"],
         load_best_model_at_end=t["load_best_model_at_end"],
         metric_for_best_model=t["metric_for_best_model"],
