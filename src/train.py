@@ -37,7 +37,7 @@ def build_trainer(model, cfg: dict, train_dataset, eval_dataset, data_collator) 
         weight_decay=t["weight_decay"],
         fp16=t["fp16"],
         logging_steps=t["logging_steps"],
-        eval_strategy=t["evaluation_strategy"],
+        evaluation_strategy=t["evaluation_strategy"],   # eval_strategy renamed in 4.45+; use old name for 4.40.x
         save_strategy=t["save_strategy"],
         load_best_model_at_end=t["load_best_model_at_end"],
         metric_for_best_model=t["metric_for_best_model"],
