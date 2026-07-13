@@ -2,6 +2,7 @@
 src/train.py — Build Trainer, run training, save model and adapter
 """
 
+import os
 import time
 import shutil
 from pathlib import Path
@@ -21,6 +22,9 @@ def build_trainer(model, cfg: dict, train_dataset, eval_dataset, data_collator) 
     t   = cfg["training"]
     es  = cfg["early_stopping"]
 
+    # logging_dir is deprecated in transformers v5.2 — use env var instead
+    os.environ["TENSORBOARD_LOGGING_DIR"] = "/kaggle/working/logs"
+
     training_args = TrainingArguments(
         output_dir=t["output_dir"],
         num_train_epochs=t["num_train_epochs"],
@@ -29,10 +33,9 @@ def build_trainer(model, cfg: dict, train_dataset, eval_dataset, data_collator) 
         gradient_accumulation_steps=t["gradient_accumulation_steps"],
         learning_rate=t["learning_rate"],
         lr_scheduler_type=t["lr_scheduler_type"],
-        warmup_ratio=t["warmup_ratio"],
+        warmup_steps=t["warmup_steps"],   # replaces deprecated warmup_ratio
         weight_decay=t["weight_decay"],
         fp16=t["fp16"],
-        logging_dir=t["logging_dir"],
         logging_steps=t["logging_steps"],
         eval_strategy=t["evaluation_strategy"],
         save_strategy=t["save_strategy"],
