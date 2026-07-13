@@ -1,13 +1,13 @@
 # Kaggle-specific requirements
-# Kaggle pre-installs: torch, transformers, accelerate, datasets,
-# tensorboard, PyYAML, numpy, tqdm, fsspec
-# We ONLY install what's missing. No version pins on pre-installed packages
-# to avoid dependency conflicts with Kaggle's frozen environment.
+# The cached Falcon-7B remote code (modeling_falcon.py) uses get_head_mask,
+# which was removed in transformers v5+. Pin to 4.40.x for compatibility.
 
-# Core fine-tuning packages (not pre-installed on Kaggle)
-peft==0.8.2
-bitsandbytes>=0.46.1
-loralib==0.1.2
+# Core — pin to known-compatible set
+transformers==4.40.2
+accelerate==0.29.3
+peft==0.10.0
+bitsandbytes>=0.43.0
 
 # Evaluation
 rouge-score==0.1.2
+loralib==0.1.2
