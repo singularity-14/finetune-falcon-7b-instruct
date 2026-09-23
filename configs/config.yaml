@@ -39,13 +39,13 @@ dataset:
 training:
   output_dir: "/kaggle/working/results"
   # logging_dir removed in v5.2 — set via TENSORBOARD_LOGGING_DIR env var (see notebook)
-  num_train_epochs: 10
+  num_train_epochs: 3
   per_device_train_batch_size: 2
   per_device_eval_batch_size: 2
   gradient_accumulation_steps: 4
   learning_rate: 2.0e-4
   lr_scheduler_type: "cosine"
-  warmup_steps: 100          # ~5% of total steps (replaces deprecated warmup_ratio)
+  warmup_steps: 10           # ~1% of the ~750-step run (2000 samples / eff. batch 8 x 3 epochs)
   weight_decay: 0.01
   fp16: true
   logging_steps: 10
