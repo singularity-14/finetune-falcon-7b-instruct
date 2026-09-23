@@ -15,7 +15,7 @@ import os
 import gc
 import logging
 import time
-from contextlib import asynccontextmanager
+from contextlib import asynccontextmanager, nullcontext
 from pathlib import Path
 from typing import List, Optional
 
@@ -26,6 +26,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 from transformers import AutoModelForCausalLM, AutoTokenizer, BitsAndBytesConfig
 from peft import PeftModel
+
+from src.model import align_dtypes
 
 # ── Logging ───────────────────────────────────────────────────────────────────
 logging.basicConfig(
@@ -79,12 +81,14 @@ async def lifespan(app: FastAPI):
         MODEL_NAME,
         device_map="auto",
         quantization_config=quant_config,
+        torch_dtype=torch.float16,   # keep non-quantized modules in the bnb compute dtype
         trust_remote_code=True,
         use_cache=True,
     )
 
     logger.info(f"Loading LoRA adapter from: {ADAPTER_DIR}")
     state.model = PeftModel.from_pretrained(base_model, ADAPTER_DIR)
+    align_dtypes(state.model, torch.float16)
     state.model.eval()
 
     state.is_loaded = True
@@ -196,7 +200,9 @@ def generate_answer(request: PredictRequest) -> str:
         truncation=True,
     ).to(state.device)
 
-    with torch.no_grad():
+    autocast = (torch.autocast("cuda", dtype=torch.float16)
+                if torch.cuda.is_available() else nullcontext())
+    with torch.no_grad(), autocast:
         output_ids = state.model.generate(
             **inputs,
             max_new_tokens=request.max_new_tokens,

@@ -6,8 +6,34 @@ import json
 import math
 import numpy as np
 import torch
+from contextlib import nullcontext
 from pathlib import Path
 from tqdm.auto import tqdm
+
+from src.model import align_dtypes
+
+
+# ── Dtype safety ──────────────────────────────────────────────────────────────
+# With bitsandbytes 4-bit, the quantized linears compute in fp16 while anything
+# left unquantized (embeddings, layernorms, rotary cache, LoRA) may still be
+# fp32. Falcon rotates only q/k, so attention ends up with fp32 q/k and fp16 v:
+#   RuntimeError: Expected query, key, and value to have the same dtype,
+#   but got query.dtype: float key.dtype: float and value.dtype: c10::Half
+# align_dtypes() removes the fp32 tensors; autocast catches anything that is
+# recomputed (or cached) in fp32 at runtime.
+
+def prepare_for_inference(model, dtype: torch.dtype = torch.float16):
+    """Put the model in eval mode with a single, consistent floating dtype."""
+    model.eval()
+    align_dtypes(model, dtype)
+    return model
+
+
+def inference_ctx(device: str = "cuda", dtype: torch.dtype = torch.float16):
+    """Autocast on CUDA so q/k/v reach scaled_dot_product_attention in one dtype."""
+    if str(device).startswith("cuda") and torch.cuda.is_available():
+        return torch.autocast("cuda", dtype=dtype)
+    return nullcontext()
 
 
 # ── Inference helper ───────────────────────────────────────────────────────────
@@ -24,7 +50,7 @@ def generate_answer(model, tokenizer, question: str, cfg: dict, device: str = "c
         prompt, return_tensors="pt", max_length=400, truncation=True
     ).to(device)
 
-    with torch.no_grad():
+    with torch.no_grad(), inference_ctx(device):
         output_ids = model.generate(
             **inputs,
             max_new_tokens=e["max_new_tokens"],
@@ -50,10 +76,10 @@ def compute_perplexity(model, tokenizer, dataset, cfg: dict, device: str = "cuda
 
     from src.data import format_prompt
 
-    model.eval()
+    prepare_for_inference(model)
     total_loss, total_tokens = 0.0, 0
 
-    with torch.no_grad():
+    with torch.no_grad(), inference_ctx(device):
         for ex in tqdm(dataset, desc="Perplexity"):
             text = format_prompt(str(ex["question"]), str(ex["answer"]))
             inputs = tokenizer(
@@ -99,7 +125,7 @@ def _score_option(model, tokenizer, question: str, option_text: str,
     inputs = tokenizer(
         prompt, return_tensors="pt", max_length=max_len, truncation=True
     ).to(device)
-    with torch.no_grad():
+    with torch.no_grad(), inference_ctx(device):
         out = model(**inputs, labels=inputs["input_ids"])
     return out.loss.item()  # Lower NLL → model prefers this option
 
@@ -112,7 +138,7 @@ def compute_mc_accuracy(model, tokenizer, dataset, cfg: dict, device: str = "cud
     print("\n🎯 Computing multiple-choice accuracy (NLL scoring)...")
 
     max_len = cfg["dataset"]["max_length"]
-    model.eval()
+    prepare_for_inference(model)
     correct, total, results = 0, 0, []
 
     for i, ex in enumerate(tqdm(dataset, desc="MC Accuracy")):
@@ -163,7 +189,7 @@ def compute_rouge(model, tokenizer, dataset, cfg: dict, device: str = "cuda") ->
     r1, r2, rl = [], [], []
     qualitative = []
 
-    model.eval()
+    prepare_for_inference(model)
     for ex in tqdm(dataset, desc="ROUGE"):
         question    = str(ex["question"])
         true_answer = str(ex["answer"])

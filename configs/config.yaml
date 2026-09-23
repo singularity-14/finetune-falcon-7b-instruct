@@ -5,7 +5,7 @@
 # --- Model ---
 model:
   name: "tiiuae/falcon-7b-instruct"
-  trust_remote_code: true
+  trust_remote_code: false   # transformers≥4.36 has native Falcon; avoid remote code to prevent get_head_mask errors
   use_cache: false
 
 # --- Quantization (BitsAndBytes 4-bit) ---
